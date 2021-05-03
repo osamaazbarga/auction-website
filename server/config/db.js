@@ -1,5 +1,5 @@
 const mongoose=require('mongoose')
-const url='mongodb+srv://osama-admin:315454199@cluster0.inddq.mongodb.net/auctionproject?retryWrites=true&w=majority'
+const url='mongodb+srv://osama-admin:315454199@cluster0.inddq.mongodb.net/Auctionapp?retryWrites=true&w=majority'
 const connectionParams={
     useNewUrlParser: true,
     useCreateIndex: true,

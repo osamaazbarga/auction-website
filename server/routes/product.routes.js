@@ -1,9 +1,9 @@
 const express=require('express');
 const router=express.Router();
-const productController=require('../controllers/product.controller')
+//const productController=require('../controllers/product.controller')
 require('../config/db')
 const productsSchema=require('../models/products.model')
-
+console.log('hi from route');
 router.get('/',(req,res)=>{
     productsSchema.find({}).then((products)=>{
         res.send(products)
@@ -15,7 +15,8 @@ router.get('/',(req,res)=>{
     const product=new productsSchema(req.body)
     product.save().then(()=>{
         //console.log(user[0].userID);
-        res.status(201).send(product)
+        // res.status(201).send(product)
+        res.send('hi post')
         //const account=new AccountsSchema({userID:user.userID})
         //account.save()
 
