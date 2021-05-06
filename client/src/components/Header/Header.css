@@ -1,0 +1,69 @@
+/*  *//* *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+} */
+
+.navbar-n{
+    display: flex;
+    align-items: center;
+    padding: 20px;
+
+}
+nav{
+    flex: 1;
+    text-align: right;
+}
+
+
+p{
+    color: #555;
+}
+
+header{
+    max-width: 80%;
+    margin:0 auto;
+    padding: 0 25px;
+    
+}
+
+.col-2{
+    min-width: 400px;
+    flex-basis: 50%;
+}
+
+.col-2 h1{
+    font-size: 50px;
+    line-height: 60px;
+    margin: 25px 0;
+}
+
+.row{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.bigheader{
+    /* background: rgba(133,114,178,255);
+    background-image: url("https://media.edgeprop.my/s3fs-public/editorial/my/2020/September/3/auction05.JPG");
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover; 
+    height: 600px; */
+    
+}
+
+.btnn{
+    display: inline-block;
+    background: linear-gradient(90deg,rgb(110,94,254)0%,rgba(73,63,252,1)100%);
+    padding: 10px 20px;
+    color: white;
+}
+
+
+.main{
+    max-width: 100%;
+    background-color: #e5e5e5;
+}

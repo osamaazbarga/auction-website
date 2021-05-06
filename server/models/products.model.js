@@ -3,13 +3,18 @@ const validator=require('validator')
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 
-const productSchema=mongoose.model('product',{
+const productSchema=new mongoose.Schema({
     productID:{
         type:Number,
         //unique:true,
         //required:true,
         default:1000000
     },
+    seq: {
+        type: Number,
+        default: 0
+    },
+
     // customerID:{
     //     type:Number,
     //     required:true,
@@ -90,6 +95,21 @@ const productSchema=mongoose.model('product',{
     // }
 
 })
-// productSchema.plugin(AutoIncrement.plugin,{inc_field:'productID'})
-module.exports=productSchema
+// productSchema.plugin(AutoIncrement,{inc_field:'productID'})
+
+
+
+// productSchema.pre('save', async function(next) {
+//     var doc = this;
+//     console.log(doc);
+//     await productSchema.findOneAndUpdate({productID: "productID"}, {$inc: { seq: 1} }, function(error, counter)   {
+//         if(error)
+//             return next(error);
+//         doc.productID = counter.seq;
+//         next();
+//     });
+// });
+
+const product = mongoose.model('product', productSchema)
+module.exports=product
 

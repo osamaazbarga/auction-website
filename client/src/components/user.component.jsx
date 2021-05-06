@@ -7,8 +7,9 @@ function User() {
   const [user, setUser] = useState(null)
 
   const getUser = async () =>{
-    const data = await axios.get('api/getUser')
-    setUser(data.data)
+    const data = await axios.get('api/customers')
+    console.log(data.data[0].email);
+    setUser(data.data[0].email)
   }
 
   useEffect(() => {
@@ -29,6 +30,8 @@ function User() {
         >
           Learn React
         </a>
+        <button className="btn btn-primary">osama</button>
+        <button className="btn btn-info">osama</button>
       </header>
     </div>
   );

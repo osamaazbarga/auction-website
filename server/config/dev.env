@@ -1,0 +1,2 @@
+SENDGRID_API_KEY=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
+JWT_SECRET=thisissecretformyapp
