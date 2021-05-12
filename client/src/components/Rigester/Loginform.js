@@ -4,7 +4,7 @@ import { Formik, Field, Form } from "formik";
 import { AccountContext } from './accountContext';
 import { useContext } from 'react';
 import Api from '../Api/MainAPI'
-import{Link} from 'react-router-dom'
+import{Link,Redirect, useHistory} from 'react-router-dom'
 import{BrowserRouter,Route} from 'react-router-dom'
 
 
@@ -12,6 +12,10 @@ export default function Loginform(props) {
     const {switchToSignup}=useContext(AccountContext)
     const [loginError,setLoginError]=useState("")
     const [user,setUser]=useState("")
+    const [from,setFrom]=useState(props.location)
+    const [redirectToReferrer,setRedirectToReferrer]=useState(false)
+    const history=useHistory()
+
     useEffect(() => {
         setLoginError("")
         
@@ -27,6 +31,9 @@ export default function Loginform(props) {
         else {
             setLoginError("")
             setUser(req.data)
+            if(this.state.isLoggedIn === true){
+                return (<Redirect to="/" />);
+            
 
         }
         // try {
@@ -47,8 +54,16 @@ export default function Loginform(props) {
         
         
     }
+
+    // const login=()=>{
+    //     if(user!=""){
+    //         setFrom("/")
+    //     }
+    // }
+
     return (
         <div className="boxcontainer">
+
             
             <Formik
         initialValues={{ email: "", password: "" }}
