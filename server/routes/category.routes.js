@@ -13,12 +13,15 @@ router.get('/',(req,res)=>{
 }).post('/',(req,res)=>{
     //console.log(req.body.userID);
     const category=new categorySchema(req.body)
-    console.log(req.body);
+    // console.log(req.body);
+
     //productsSchema.findOneAndUpdate({ _id: product._id},{$inc:{ seq: 1}})
     categorySchema.findOne({}, {}, { sort: { _id : -1 } }, function(err, post) {
+        console.log("post out"+post);
         if(post){
             // category.seq=post.seq+1
             category.categoryID=post.categoryID+1
+            console.log("post in"+post);
             //console.log(category);
         }
         category.save().then(()=>{

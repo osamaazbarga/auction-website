@@ -21,9 +21,11 @@ const userSchema=new mongoose.Schema({
         trim: true,
         lowercase: true,
         validate(value) {
+            
             if (!validator.isEmail(value)) {
                 throw new Error('Email is invalid')
             }
+            message: '{VALUE} is not a valid email'
         }
     },
     password: {
@@ -39,6 +41,7 @@ const userSchema=new mongoose.Schema({
     },
     age: {
         type: Number,
+        required:false,
         default: 0,
         validate(value) {
             if (value < 0) {
@@ -52,39 +55,6 @@ const userSchema=new mongoose.Schema({
         required:true
 
     },
-    // payment:{
-    //     paypal:{
-    //         isActive:{
-    //             type:Boolean,
-    //             default:false,
-    //         },
-    //         email:{
-    //             type: String,
-    //             unique: true,
-    //             trim: true,
-    //             lowercase: true,
-    //             validate(value) {
-    //                 if (!validator.isEmail(value)) {
-    //                     throw new Error('Email is invalid')
-    //                 }
-    //             }
-    //         }
-
-    //     }
-    //     // credit:{
-    //     //     isActive:{
-    //     //         type:Boolean,
-    //     //         default:false,
-    //     //     },
-    //     //     details:{
-    //     //         creditnumber:{
-    //     //             type: Number,
-    //     //             unique: true,
-    //     //         },
-    //     //         owne
-    //     //     }
-    //     // }
-    // },
 
     tokens: [{
         token: {

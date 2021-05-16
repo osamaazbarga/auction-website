@@ -1,0 +1,44 @@
+.uptitle{
+    display: flex;
+    font-size: 20px;
+    font-weight: bold;
+}
+.input{
+    border: 1px solid rgba(200,200,200,0.5);
+}
+
+.inputarea{
+    width: 100%;
+    
+    outline: none;
+    border: 1px solid rgba(200,200,200,0.5);
+    padding: 0px 10px;
+    border-bottom: 1.4px solid transparent;
+    transition: all 200ms ease-in-out;
+    font-size: 15px;
+}
+
+.inputarea::placeholder{
+    color: rgba(200,200,200,1);
+}
+.inputarea:not(:last-of-type){
+    border-bottom: 1.5px solid rgba(200, 200, 200, 0.4);
+}
+
+.inputarea:focus{
+    outline: none;
+    border-bottom: 2px solid rgb(143,37,255);
+}
+
+.drop{
+    width: 10vw;
+    float: left;
+}
+
+.dropzone{
+    width: "100%";
+  height: "auto";
+  border: 2px rgb(102, 102, 102) dashed;
+  border-radius: 5px;
+}
+

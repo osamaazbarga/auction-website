@@ -18,17 +18,41 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const user = new customerSchema(req.body)
+    
+    customerSchema.findOne({}, {}, { sort: { _id : -1 } }, function(err, post) {
+        if(post){
+            // category.seq=post.seq+1
+            user.customerID=post.customerID+1
+            console.log(user);
+            //console.log(category);
+        }
 
-    try {
-        await user.save()
+        user.save().then(async()=>{
+            //console.log(user[0].userID);
+            // res.status(201).send(product)
+            sendWelcomeEmail(user.email,user.username)
+            const token = await user.generateAuthToken()
+            console.log(token);
+            res.status(201).send({ user, token })
+            //const account=new AccountsSchema({userID:user.userID})
+            //account.save()
+    
+    
+        }).catch((error)=>{
+            res.status(200).send({error:"the account is register"})
+        })
+    });
+
+    // try {
+    //     await user.save()
         
-        sendWelcomeEmail(user.email,user.username)
-        const token = await user.generateAuthToken()
-        console.log(token);
-        res.status(201).send({ user, token })
-    } catch (e) {
-        res.status(400).send(e)
-    }
+    //     sendWelcomeEmail(user.email,user.username)
+    //     const token = await user.generateAuthToken()
+    //     console.log(token);
+    //     res.status(201).send({ user, token })
+    // } catch (e) {
+    //     res.status(400).send(e)
+    // }
 })
 
 router.post('/login', async (req, res) => {
@@ -44,7 +68,7 @@ router.post('/login', async (req, res) => {
 
         return res.send({ user, token })
     } catch (e) {
-        return res.status(400).send({ error: 'one or more from the information is uncorrent' })
+        return res.send({ error: 'one or more from the information is uncorrent' })
     }
 })
 

@@ -2,37 +2,69 @@ const mongoose=require('mongoose')
 const validator=require('validator')
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
+const uploadSchema=new mongoose.Schema({
+    filename:{
+        type:String
+    },
+    contentType:{
+        type:String
+    },
+    ImageBase64:{
+        type:String,
+    }
+})
+
 
 const productSchema=new mongoose.Schema({
     productID:{
         type:Number,
-        //unique:true,
-        //required:true,
+        unique:true,
+        required:true,
         default:1000000
     },
     seq: {
         type: Number,
-        default: 0
+        default: 0,
+        required:false
     },
 
     // customerID:{
     //     type:Number,
     //     required:true,
     // },
-    // title:{
-    //     type: String,
-    //     required: true,
-    //     trim: true
-    // },
-    // category:{
-    //     type:Number,
-    //     required: true
+    title:{
+        type: String,
+        required: true,
+        trim: true
+    },
+    category:{
+        type:String,
+        required: true
 
+    },
+    // pic:{
+    //     type:Buffer
     // },
-    // pic:[],
-    // discription:{
-    //     type:String,
-    //     required:true
+    discription:{
+        type:String,
+        required:true
+    },
+    meta_data:[uploadSchema],
+    // meta_data:{
+    //     //type:[String]
+    //     filename:{
+    //         type:String
+    //     },
+    //     contentType:{
+    //         type:String
+    //     },
+    //     ImageBase64:{
+    //         type:String,
+    //     }
+                
+            
+        
+        
     // },
     // created_at:{
     //     type: Date, 
@@ -44,17 +76,18 @@ const productSchema=new mongoose.Schema({
     //     default: Date.now,
     //     required:false
     // },
-    // price:{
-    //     type: Number,
-    //     required:true,
-    //     validate(value) {
-    //         if (value < 0) {
-    //             throw new Error('the price in unleggal')
-    //         }
-    //     }
-    // },
+    price:{
+        type: Number,
+        required:true,
+        validate(value) {
+            if (value < 0) {
+                throw new Error('the price in unleggal')
+            }
+        }
+    },
     auctiondays:{
         type:Number,
+        required:true
 
     },
     startdate:{
@@ -62,39 +95,41 @@ const productSchema=new mongoose.Schema({
         required: true, 
         default: Date.now
     },
-    // finishdate:{
-    //     type: Date, 
-    //     required: true,
-    // },
-    // condition:{
-    //     type:String,
-    //     required:true
-    // },
-    // shippingprice:{
-    //     type: Number,
-    //     required:false,
-    //     validate(value) {
-    //         if (value < 0) {
-    //             throw new Error('the price in unleggal')
-    //         }
-    //     }
-    // },
-    // shippingwith:{
-    //     type: String,
-    //     required:false,
-    // },
+    finishdate:{
+        type: Date, 
+        required: true,
+        default: Date.now
+    },
+    condition:{
+        type:String,
+        required:true
+    },
+    shippingprice:{
+        type: Number,
+        required:false,
+        validate(value) {
+            if (value < 0) {
+                throw new Error('the price in unleggal')
+            }
+        }
+    },
+    shippingwith:{
+        type: String,
+        required:false,
+    },
     // paymentway:[],
-    // country:{
-    //     type:String,
-    //     required:true
-    // },
-    // status:{
-    //     type:String,
-    //     required:true,
-    //     default:'active'
-    // }
+    country:{
+        type:String,
+        required:true,
+        default:""
+    },
+    status:{
+        type:String,
+        required:true,
+        default:'active'
+    }
 
-})
+},{ timestamps: true })
 // productSchema.plugin(AutoIncrement,{inc_field:'productID'})
 
 
@@ -109,6 +144,8 @@ const productSchema=new mongoose.Schema({
 //         next();
 //     });
 // });
+
+
 
 const product = mongoose.model('product', productSchema)
 module.exports=product

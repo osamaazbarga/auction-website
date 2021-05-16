@@ -1,23 +1,37 @@
-import React,{useState,useEffect} from 'react'
+import React,{Fragment,useState,useEffect} from 'react'
 import './Common.css'
 import { Formik, Field, Form } from "formik";
 import { AccountContext } from './accountContext';
 import { useContext } from 'react';
 import Api from '../Api/MainAPI'
 import{Link,Redirect, useHistory} from 'react-router-dom'
-import{BrowserRouter,Route} from 'react-router-dom'
+// import{BrowserRouter,Route} from 'react-router-dom'
+// import {createStore} from 'redux'
+import { useDispatch, useSelector } from 'react-redux';
+
+import {selectUser} from '../../actions'
 
 
-export default function Loginform(props) {
+import { connect } from 'react-redux'
+
+
+ function Loginform(props) {
     const {switchToSignup}=useContext(AccountContext)
     const [loginError,setLoginError]=useState("")
     const [user,setUser]=useState("")
-    const [from,setFrom]=useState(props.location)
-    const [redirectToReferrer,setRedirectToReferrer]=useState(false)
     const history=useHistory()
+    const [inputs, setInputs] = useState({
+        username: '',
+        password: ''
+    });
+    // const { username, password } = inputs;
+    // const loggingIn = useSelector(state => state.authentication.loggingIn);
+    // const dispatch = useDispatch();
+    // const location = useLocation();
 
     useEffect(() => {
         setLoginError("")
+        // dispatch(userActions.logout()); 
         
     },[])
     const loginApi=async(values)=>{
@@ -30,10 +44,14 @@ export default function Loginform(props) {
         }
         else {
             setLoginError("")
+            localStorage.setItem("user",JSON.stringify(req.data))
             setUser(req.data)
-            if(this.state.isLoggedIn === true){
-                return (<Redirect to="/" />);
-            
+            selectUser(user)
+            // setInputs({username:})
+            console.log(req.data);
+
+
+            history.push("/")
 
         }
         // try {
@@ -90,3 +108,13 @@ export default function Loginform(props) {
         </div>
     )
 }
+
+const mapStateToProps=(state)=>{
+
+    console.log(state);
+    return {users:state.users}
+}
+
+
+
+export default connect(mapStateToProps,{ selectUser })(Loginform)
