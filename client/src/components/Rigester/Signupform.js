@@ -18,7 +18,7 @@ export default function Signupform(props) {
     },[])
 
     const signupApi=async(values)=>{
-        const req=await Api.post('customers',{
+        const req=await Api.post('api/customers',{
             username:String(values.username),
             email:String(values.email),
             password:String(values.password)

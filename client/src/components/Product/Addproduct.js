@@ -76,7 +76,7 @@ export default function Addproduct() {
     }
     formData.append('images', productinputs);
     console.log(formData.getAll('images'));
-    const req = await Api.post('products/addproduct', {
+    const req = await Api.post('api/products/addproduct', {
       // body: JSON.stringify(productinputs),
       customerID: String(user.user.customerID),
       title: String(values.title),
@@ -92,12 +92,12 @@ export default function Addproduct() {
     console.log(req);
     console.log(req.data.productID);
     setProductInfo(req.data)
-    const addpic = await Api.put(`products/addproduct/${req.data.productID}`, formData, config)
+    const addpic = await Api.put(`api/products/addproduct/${req.data.productID}`, formData, config)
 
   }
 
   const getCategoriesApi = async () => {
-    const req = await Api.get('categories')
+    const req = await Api.get('api/categories')
     console.log(req.data);
     setCategoryList(req.data)
   }

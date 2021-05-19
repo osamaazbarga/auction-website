@@ -36,7 +36,7 @@ import ReloadLogin from '../Reload/ReloadLogin';
         
     },[])
     const loginApi=async(values)=>{
-        const req=await Api.post('customers/login',{
+        const req=await Api.post('api/customers/login',{
             email:String(values.email),
             password:String(values.password)
         })

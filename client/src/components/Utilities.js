@@ -21,6 +21,7 @@ export async function getProductsApi() {
 
 export async function getAuctionsApi() {
     const req=await Api.get('api/auctions')
+    console.log(req);
     return req.data
 }
 

@@ -48,8 +48,11 @@ export default function Productlist() {
     // }
 
     const countsOfBids=(id)=>{
-      const result = auctionList.filter(auction => auction.productID==id);
-      return result.length
+      if(auctionList){
+        const result = auctionList.filter(auction => auction.productID==id);
+        return result.length
+      }
+      return
     }
 
     const getcategoryById=(id)=>{
