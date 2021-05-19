@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 // import{BrowserRouter,Route} from 'react-router-dom'
-// import{Link} from 'react-router-dom'
+import{Link} from 'react-router-dom'
+
 
 import './Home.css'
 import Header from '../Header/Header'
-import { getCategoriesApi } from '../Utilities'
+import { getCategoriesApi ,getProductsApi} from '../Utilities'
 import {Carousel} from 'react-bootstrap'
 
 import 'bootstrap/dist/css/bootstrap.css';
@@ -13,15 +14,20 @@ import 'bootstrap/dist/css/bootstrap.css';
 // import Register from '../Register/Register'
 
 const Home = () => {
-    const [categoryList, setCategoryList] = useState(null)  
+    const [categoryList, setCategoryList] = useState(null)
+    const [productList, setProductList] = useState(null)
+
 
     useEffect(() => {
         takeapi()
     }, [])
 
     const takeapi = async () => {
-        const data = await getCategoriesApi()
-        setCategoryList(data)
+        const dataCat = await getCategoriesApi()
+        const datapro = await getProductsApi()
+
+        setProductList(datapro.reverse())
+        setCategoryList(dataCat)
     }
 
     const Carousal=()=>{
@@ -67,6 +73,17 @@ const Home = () => {
             </Carousel.Item>
             </Carousel>
         )
+    }
+
+    const dateCompare=(finishdate)=>{
+        const d1=new Date(finishdate)
+        const d2=new Date()
+        if(d1>d2){
+            return <div className="badge badge-secondary badge-pill badge-news">Ended</div>
+        }
+        return (<div className="badge badge-success badge-pill badge-news">Active</div>)
+        console.log(d1,d2);
+
     }
 
     const Feature=()=>{
@@ -164,29 +181,52 @@ const Home = () => {
                     
                     <div className="d-flex flex-wrap">
                         <div className="row justify-content-center w-100 mb-2">
-                            <div className="display-4 form-group">Category</div>
+                            <div className="display-4 form-group">Last Products</div>
                         </div>
                             <div className="row">
-                                <div className="form-group">
-                                <div className="view zoom overlay z-depth-2 rounded">
-                                        {/* <img class="img-fluid w-100"
-                                        src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12a.jpg" alt="Sample"/> */}
-                                        <a href="#!">
-                                        <div className="text-center mask">
-                                            <img width="200" height="200" className=" ml-1"
-                                            src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg"/>
-                                            {/* <div class="mask rgba-black-slight"></div> */}
-                                        </div>
-                                        </a>
+                                {
+                                    productList && productList.map((pro,index)=>{
+                                        if(index<14){
+                                            return(
+                                                <div className="form-group">
+                                            <div className="view zoom overlay z-depth-2 rounded">
+                                                {/* <img class="img-fluid w-100"
+                                                src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12a.jpg" alt="Sample"/> */}
+                                                <a href="#!">
+                                                <Link to={`/product/${pro.productID}`}>
+                                                <div className="text-center mask">
+                                                    {
+                                                        pro.meta_data.length>0?<img width="200" height="200" className=" ml-1"
+                                                        src={`data:${pro.meta_data[0].contentType};base64, ${pro.meta_data[0].ImageBase64}`}/>:<img className="ml-1" width="200" height="200"
+                                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/832px-No-Image-Placeholder.svg.png"/>
+                                                    }
+                                                    {/* <img width="200" height="200" className=" ml-1"
+                                                    src={`data:${pro.meta_data[0].contentType};base64, ${pro.meta_data[0].ImageBase64}`}/> */}
+                                                    {/* <div class="mask rgba-black-slight"></div> */}
+                                                </div>
+                                                </Link>
+                                                </a>
 
-                                        <div className="text-center pt-4">
+                                                <div className="text-center pt-4">
 
-                                            <h5>Fantasy T-shirt</h5>
-                                            <h6 className="mb-3">12.99 $</h6>
+                                            <h5>{pro.title}</h5>
+                                            <h6 className="mb-3">{pro.priceAuction} $</h6>
+                                            <h6 className="mb-3">
+                                                {/* {new Date(pro.finishdate)<new Date.now()?<div>active</div>:<div>not</div>} */}
+                                                {
+                                                    dateCompare(pro.finishdate)
+                                                }
+                                            </h6>
+
 
                                         </div>
                                     </div>
                                 </div>
+                                            )
+                                        }
+                                    })
+                                }
+                                
 
 
 

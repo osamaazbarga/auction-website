@@ -27,7 +27,7 @@ export default function Product() {
 
     
     const getProductByID=async()=>{
-        const req=await Api.get(`products/${id}`)
+        const req=await Api.get(`api/products/${id}`)
         console.log(req.data);
         setProductInfo(req.data)
         setProductImages(req.data.meta_data[0])
@@ -38,7 +38,7 @@ export default function Product() {
         
     }
     const getAuctionPayments=async()=>{
-        const req=await Api.get(`auctions/byproduct/${id}`)
+        const req=await Api.get(`api/auctions/byproduct/${id}`)
         console.log(req.data);
         if(req.data.nodata){
             setaAuctionError(req.data.nodata)
@@ -53,7 +53,7 @@ export default function Product() {
         
     }
     const getCustomerByID=async(customerIDnum)=>{
-        const req=await Api.get(`customers/${customerIDnum}`)
+        const req=await Api.get(`api/customers/${customerIDnum}`)
         console.log(req.data);
         return req.data
         // setProductInfo(req.data)
@@ -140,7 +140,7 @@ export default function Product() {
     //     })
     // }
     const updatePriceAuctions=async(productIDnum,amount)=>{
-        const req=await Api.post(`products/updatepriceauctions/${productIDnum}`,{
+        const req=await Api.post(`api/products/updatepriceauctions/${productIDnum}`,{
             priceAuction:Number(amount)
         })
         await getProductByID()
@@ -151,7 +151,7 @@ export default function Product() {
     const handlePayment=async()=>{
         if(user){
             console.log(user.user);
-            const req=await Api.post(`auctions`,{
+            const req=await Api.post(`api/auctions`,{
                 productID:Number(productInfo.productID),
                 customerID:Number(user.user.customerID),
                 paymentamount:Number(priceAuction)

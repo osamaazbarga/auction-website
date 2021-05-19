@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { getCategoriesApi, getProductsApi,getCategoryByIDApi,getAuctionsApi} from '../Utilities'
 import Timerview from './Timerview'
 import Api from '../Api/MainAPI';
+import{Link} from 'react-router-dom'
 
 export default function Productlist() {
 
