@@ -2,14 +2,24 @@ import './Product.css'
 import './Productresponsive.css'
 import { useParams } from 'react-router'
 import React, {useRef, useState,useEffect ,StrictMode} from 'react'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { changeStatusProduct} from '../Utilities'
 
 
 
 import Api from '../Api/MainAPI';
 export default function Product() {
     let {id}=useParams();
+    const user = JSON.parse(localStorage.getItem('user'))
     const [productInfo,setProductInfo]=useState([])
+    const [productAuctions,setProductAuctions]=useState([])
     const [productImages,setProductImages]=useState([])
+    const [auctionError,setaAuctionError]=useState("")
+    const [priceAuction,setPriceAuction]=useState(null)
+    const [sellerInfo,setSellerInfo]=useState([])
+
+
+
     // const [timeLeft, setTimeLeft] = useState();
     const [isRunningTime, setIsRunningTime] = useState(true);
     let difference = new Date(productInfo.finishdate) - new Date();
@@ -21,12 +31,41 @@ export default function Product() {
         console.log(req.data);
         setProductInfo(req.data)
         setProductImages(req.data.meta_data[0])
+        const seller=await getCustomerByID(req.data.customerID)
+        setSellerInfo(seller)
+        console.log(await sellerInfo);
+        //console.log("data:"+productInfo.meta_data[0].contentType+";base64 "+productInfo.meta_data[0].ImageBase64);
+        
+    }
+    const getAuctionPayments=async()=>{
+        const req=await Api.get(`auctions/byproduct/${id}`)
+        console.log(req.data);
+        if(req.data.nodata){
+            setaAuctionError(req.data.nodata)
+        }
+        else{
+            setaAuctionError("")
+            setProductAuctions(req.data)
+        }
+        setProductAuctions(req.data)
+        // setProductImages(req.data.meta_data[0])
+        //console.log("data:"+productInfo.meta_data[0].contentType+";base64 "+productInfo.meta_data[0].ImageBase64);
+        
+    }
+    const getCustomerByID=async(customerIDnum)=>{
+        const req=await Api.get(`customers/${customerIDnum}`)
+        console.log(req.data);
+        return req.data
+        // setProductInfo(req.data)
+        
         //console.log("data:"+productInfo.meta_data[0].contentType+";base64 "+productInfo.meta_data[0].ImageBase64);
         
     }
     useEffect(() => {
         console.log(id);
+        console.log(user);
         getProductByID()
+        getAuctionPayments()
         
     }, [])
     useEffect(() => {
@@ -62,6 +101,7 @@ export default function Product() {
         }
         if(timeLeft == null){
             setIsRunningTime(false)
+
             console.log("here");
         }
         // else setIsRunningTime(false)
@@ -77,8 +117,9 @@ export default function Product() {
         Object.keys(timeLeft).forEach((interval) => {
             // console.log(timeLeft['d']);
             if(timeLeft['d']<=0&&timeLeft['h']<=0&&timeLeft['m']<=0&&timeLeft['s']<=0 && isRunningTime==true){
-
+                changeStatusProduct(productInfo.productID)
                 setIsRunningTime(false)
+                
                 console.log(isRunningTime);
             }
             
@@ -92,6 +133,44 @@ export default function Product() {
             </span>
         );
         });
+
+    // const renderAuctionsPayments=()=>{
+    //     return productAuctions.map((act)=>{
+    //         console.log(act);
+    //     })
+    // }
+    const updatePriceAuctions=async(productIDnum,amount)=>{
+        const req=await Api.post(`products/updatepriceauctions/${productIDnum}`,{
+            priceAuction:Number(amount)
+        })
+        await getProductByID()
+        console.log(req);
+
+    }
+
+    const handlePayment=async()=>{
+        if(user){
+            console.log(user.user);
+            const req=await Api.post(`auctions`,{
+                productID:Number(productInfo.productID),
+                customerID:Number(user.user.customerID),
+                paymentamount:Number(priceAuction)
+
+            })
+            console.log(req.data)
+            if(req.data.error){
+                console.log("error");
+            }
+            else{
+                updatePriceAuctions(productInfo.productID,priceAuction)
+            }
+            // console.log(priceAuction);
+
+        }
+        else{
+            console.log("noname");
+        }
+    }
         
 
     
@@ -132,16 +211,12 @@ export default function Product() {
                                                 
                                             })
                                         }
-                                        {/* <a href="#" class="item-thumb"> <img src="assets/images/items/3.jpg" /></a>
-                                        <a href="#" class="item-thumb"> <img src="assets/images/items/3.jpg" /></a>
-                                        <a href="#" class="item-thumb"> <img src="assets/images/items/3.jpg" /></a>
-                                        <a href="#" class="item-thumb"> <img src="assets/images/items/3.jpg" /></a> */}
                                     </div>
                                 </article>
                         </aside>
                         <main class="col-md-6">
                             <article>
-                                <a href="#" class="text-primary btn-link">Seller name</a>
+                                <a href="#" class="text-primary btn-link">{sellerInfo.username}</a>
                                 <h3 class="title">{productInfo.title}</h3>
                                 <div>
                                     <ul class="rating-stars">
@@ -209,7 +284,7 @@ export default function Product() {
                                 </div>
 
                                 <div class="mb-3">
-                                    <var class="h5">Starting bid:</var> <var class="price h4">$230.00</var> <br />
+                                    <var class="h5">Starting bid:</var> <var class="price h4">${productInfo.price}</var> <br />
                                     {/* <span class="monthly">$32.00 / monthly <a href="#" class="btn-link">installment </a></span> */}
                                 </div> 
 
@@ -217,18 +292,18 @@ export default function Product() {
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">$</span>
                                     </div>
-                                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)"/>
+                                    <input type="text" onChange={event => setPriceAuction(event.target.value)} class="form-control" aria-label="Amount (to the nearest dollar)"/>
                                     {/* <div class="input-group-append">
                                         <span class="input-group-text">.00</span>
                                     </div> */}
                                     {
-                                        difference>=0?<button class="btn btn-primary mr-1">Place Bid</button>:<button disabled class="btn btn-primary mr-1">Place Bid</button>
+                                        difference>=0?<button onClick={handlePayment} class="btn btn-primary mr-1">Place Bid</button>:<button disabled class="btn btn-primary mr-1">Place Bid</button>
                                     }
                                     {/* <button class="btn btn-primary mr-1">Place Bid</button> */}
                                     <a href="#" class="btn btn-light">Add to card</a>
                                     </div> 
                                 <div class="mb-3">
-                                <var class="h5">Price:</var><var class="price h4">$230.00</var> <br />
+                                <var class="h5">Price:</var><var class="price h4">${productInfo.priceAuction}</var> <br />
                                     {/* <span class="monthly">$32.00 / monthly <a href="#" class="btn-link">installment </a></span> */}
                                 </div> 
         
@@ -239,6 +314,28 @@ export default function Product() {
                     </div> 
             </div> 
         </article>
+
+        <article class="card mt-5">
+            <div class="card-body justify-center">
+                {/* <div class="row">
+                </div>  */}
+                {/* {
+                    auctionError?auctionError:renderAuctionsPayments()
+                } */}
+                {/* <hr /> */}
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </p>
+            </div> 
+        </article>
+
+
+
         <article class="card mt-5">
             <div class="card-body">
                 <div class="row">

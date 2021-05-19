@@ -107,10 +107,11 @@ router.get('/',(req,res)=>{
             product.productID+=product.seq
             // product.finishdate=product.startdate
             product.finishdate=product.finishdate.setDate(product.startdate.getDate() + product.auctiondays)
-            console.log("product post1",product);
+            // console.log("product post1",product);
             
         }
-        console.log("product post1",post);
+        console.log("product post1",product);
+        product.priceAuction=product.price
         product.save().then(()=>{
             //console.log(user[0].userID);
             // res.status(201).send(product)
@@ -146,7 +147,7 @@ router.get('/',(req,res)=>{
         console.log(files);
     productsSchema.findOne({productID:id},async(err, post)=> {
         const files=req.files
-        console.log(files);
+        // console.log(files);
         //console.log(files);
         // for (let i = 0; i < files.length; i++) {
         //     const buffer= await sharp(files[i].path).resize({ width:250,height:250 }).png().toBuffer()
@@ -200,6 +201,40 @@ router.get('/',(req,res)=>{
     
     // const files=req.files
     // console.log(files);
+}).post('/updatepriceauctions/:id',(req,res)=>{
+    console.log("osama");
+    const id=req.params.id;
+    console.log(req.body);
+    console.log(id);
+    productsSchema.findOne({productID:id},async(err, post)=> {
+        if(post){
+            post.priceAuction=req.body.priceAuction
+        }
+        
+        console.log(post);
+        post.save()
+    })
+
+    // res.send()
+}).post('/updatestatus/:id',(req,res)=>{
+    const id=req.params.id;
+    console.log(req.body);
+    console.log(id);
+    productsSchema.findOne({productID:id},async(err, post)=> {
+        if(post){
+            if(post.status=='active'){
+                post.status='notActive'
+            }
+            else{
+                post.status='active'
+            }
+        }
+        
+        console.log(post);
+        post.save()
+    })
+
+    // res.send()
 })
 
 

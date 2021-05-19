@@ -54,9 +54,9 @@ const Footer =()=>{
                 </ul>
                 <div className="footer-bottom">
                 <div className="socials">
-                        <a className="link" href="#"><i class="fab fa-linkedin"></i></a>
-                        <a className="link" href="#"><i class="fab fa-github"></i></a>
-                        <a className="link" href="#"><i class="fab fa-whatsapp"></i></a>
+                        <a className="link" href="#"><i className="fab fa-linkedin"></i></a>
+                        <a className="link" href="#"><i className="fab fa-github"></i></a>
+                        <a className="link" href="#"><i className="fab fa-whatsapp"></i></a>
 
                     </div>
                     <p>All Right reserved by &copy; conceptial 2021</p>

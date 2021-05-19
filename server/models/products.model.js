@@ -28,10 +28,10 @@ const productSchema=new mongoose.Schema({
         required:false
     },
 
-    // customerID:{
-    //     type:Number,
-    //     required:true,
-    // },
+    customerID:{
+        type:Number,
+        required:true,
+    },
     title:{
         type: String,
         required: true,
@@ -85,6 +85,15 @@ const productSchema=new mongoose.Schema({
             }
         }
     },
+    priceAuction:{
+        type: Number,
+        required:true,
+        validate(value) {
+            if (value < 0) {
+                throw new Error('the price in unleggal')
+            }
+        }
+    },
     auctiondays:{
         type:Number,
         required:true
@@ -126,7 +135,22 @@ const productSchema=new mongoose.Schema({
     status:{
         type:String,
         required:true,
-        default:'active'
+        default:'active',
+        validator() {
+            let difference = new Date(this.finishdate) - new Date();
+            let timeLeft = {};
+            if (difference > 0) {
+                timeLeft = {
+                d: Math.floor(difference / (1000 * 60 * 60 * 24)),
+                h: Math.floor((difference / (1000 * 60 * 60)) % 24),
+                m: Math.floor((difference / 1000 / 60) % 60),
+                s: Math.floor((difference / 1000) % 60)
+                };
+            }
+            if(timeLeft == null){
+                this.status='notActive'
+            }
+        }
     }
 
 },{ timestamps: true })

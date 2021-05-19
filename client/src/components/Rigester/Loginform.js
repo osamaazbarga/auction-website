@@ -13,6 +13,7 @@ import {selectUser} from '../../actions'
 
 
 import { connect } from 'react-redux'
+import ReloadLogin from '../Reload/ReloadLogin';
 
 
  function Loginform(props) {
@@ -51,7 +52,10 @@ import { connect } from 'react-redux'
             console.log(req.data);
 
 
-            history.push("/")
+            history.push("/reloadlogin")
+            history.push(<ReloadLogin/>)
+
+            
 
         }
         // try {
@@ -99,6 +103,7 @@ import { connect } from 'react-redux'
           </form>
           <a className="mutedlink" href="#">Forget Your Password?</a>
           <button className="submitbutton" type="submit">Signin</button>
+          {/* <Link to="/" type="submit" className="submitbutton d-sm-inline mx-1">Signin</Link> */}
           <a className="mutedlink" href="#">Don't have an account <a className="boldlink" onClick={switchToSignup}>Signup</a></a>
           <div className="mutedlink" style={{color:"red"}} href="#">{loginError}</div>
         </Form>

@@ -33,7 +33,7 @@
 .item{
     color: white;
     text-decoration: none;
-    padding: 0.5rem 1rem;
+    padding: 0rem 1rem;
 }
 .item:focus, .item:hover, .item:visited, .item:link, .item:active {
     text-decoration: none;

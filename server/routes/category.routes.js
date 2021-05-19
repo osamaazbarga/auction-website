@@ -10,6 +10,13 @@ router.get('/',(req,res)=>{
     }).catch((e)=>{
         res.status(500).send()
     })
+}).get('/:id',(req,res)=>{
+    const id=req.params.id
+    categorySchema.findOne({categoryID:id}).then((category)=>{
+        res.send(category)
+    }).catch((e)=>{
+        res.status(500).send()
+    })
 }).post('/',(req,res)=>{
     //console.log(req.body.userID);
     const category=new categorySchema(req.body)

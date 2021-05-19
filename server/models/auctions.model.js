@@ -13,6 +13,9 @@ const auctionSchema=new mongoose.Schema({
     paymentamount:{
         type:Number,
         required:true,
+    },
+    counter:{
+        type:Number
     }
 
 }, {

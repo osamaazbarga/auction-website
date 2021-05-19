@@ -6,6 +6,8 @@ const path = require('path');
 const cusomersRoute = require('./server/routes/customer.routes')
 const categoriesRoute = require('./server/routes/category.routes')
 const productsRoute = require('./server/routes/product.routes')
+const auctionsRoute = require('./server/routes/auction.routes')
+
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 const port = 8000;
@@ -19,6 +21,8 @@ app.get('/api/getUser', (req,res)=>{
 app.use('/api/products',productsRoute);
 app.use('/api/categories',categoriesRoute);
 app.use('/api/customers',cusomersRoute);
+app.use('/api/auctions',auctionsRoute);
+
 
 
 

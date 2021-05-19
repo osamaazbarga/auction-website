@@ -16,6 +16,19 @@ router.get('/', async (req, res) => {
     })
 })
 
+router.get('/:id', async (req, res) => {
+    const id=req.params.id
+    customerSchema.findOne({customerID:id}).then((customer)=>{
+        console.log(customer);
+        if(!customer){
+            return res.status(404).send()
+        }
+        res.send(customer)
+    }).catch((e)=>{
+        res.status(500).send()
+    })
+})
+
 router.post('/', async (req, res) => {
     const user = new customerSchema(req.body)
     

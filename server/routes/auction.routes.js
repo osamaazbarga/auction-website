@@ -19,12 +19,12 @@ router.get('/',(req,res)=>{
 
 router.get('/byproduct/:id',(req, res) => {
     const id=req.params.id
-    auctionSchema.findOne({productID:id}).then((product)=>{
-        console.log(product);
-        if(!product){
-            return res.status(404).send()
+    auctionSchema.find({productID:id}).then((products)=>{
+        console.log(products);
+        if(!products){
+            return res.send({nodata:"be the first Bidder"})
         }
-        res.send(product)
+        res.send(products)
     }).catch((e)=>{
         res.status(500).send()
     })
@@ -44,16 +44,20 @@ router.get('/bycustomer/:id',(req, res) => {
 })
 
 router.post('/',(req, res) => {
-
-    const {auction}=req.body;
+    console.log(req.body);
+    const auction=req.body;
     auctionSchema.findOne({}, {}, { sort: { _id : -1 } }, function(err, post) {
+        console.log(auction);
+        console.log(post);
         if(post){
             if(post.paymentamount>=auction.paymentamount){
-                res.send({error:"the amount is less than the minimum"})
+                console.log("from if");
+                return res.send({error:"the amount is less than the minimum"})
             }
         }
         const newauction = new auctionSchema(req.body)
         newauction.save().then(()=>{
+            
             console.log("product post1",newauction);
             res.send(newauction)
         }).catch((error)=>{

@@ -1,8 +1,38 @@
+
+
+@media screen and (min-width: 1200px){
+  .container, .container-lg, .container-md, .container-sm, .container-xl {
+      min-width: 1450px;
+  }
+}
+
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Montserrat', sans-serif;
-  }
+}
 
-  
+
+.categorycard{
+  display: flex;
+  flex-direction: row;
+}
+
+.titlehome{
+  margin: 0 auto;
+}
+/* @media only screen and (min-width: 1200px){
+.container {
+    max-width: 1400px;
+}
+}
+   */
+
+   /* @media (min-width : 1200px) {
+    .container { max-width: 1500px; }
+} */
+
+
+
+ 
