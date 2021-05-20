@@ -26,9 +26,9 @@ const path = require('path');
 // })
 
 let storage=multer.diskStorage({
-    destination:function(req,file,cb){
-        cb(null,'upload')
-    },
+    // destination:function(req,file,cb){
+    //     cb(null,'upload')
+    // },
     filename:function(req,file,cb){
         let ext=file.originalname.substr(file.originalname.lastIndexOf("."))
         cb(null,file.filename+'-'+Date.now()+ext)
@@ -60,6 +60,18 @@ router.get('/',(req,res)=>{
 }).get('/:id',(req,res)=>{
     const id=req.params.id
     productsSchema.findOne({productID:id}).then((product)=>{
+        console.log(product);
+        if(!product){
+            return res.status(404).send()
+        }
+        res.send(product)
+    }).catch((e)=>{
+        res.status(500).send()
+    })
+}).get('/productsbycustomerid/:id',(req,res)=>{
+
+    const id=req.params.id
+    productsSchema.find({customerID:id}).then((product)=>{
         console.log(product);
         if(!product){
             return res.status(404).send()
@@ -147,7 +159,7 @@ router.get('/',(req,res)=>{
         console.log(files);
     productsSchema.findOne({productID:id},async(err, post)=> {
         const files=req.files
-        // console.log(files);
+        console.log(files);
         //console.log(files);
         // for (let i = 0; i < files.length; i++) {
         //     const buffer= await sharp(files[i].path).resize({ width:250,height:250 }).png().toBuffer()
@@ -158,6 +170,7 @@ router.get('/',(req,res)=>{
         // }
         let images=files.map((file)=>{
             let img=fs.readFileSync(file.path)
+            console.log(file);
             //console.log(img);
             return ecode_image= img.toString("base64")
         })

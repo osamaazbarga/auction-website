@@ -1,61 +1,68 @@
+import React ,{useState,useEffect}from 'react'
+import 'bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { Link } from 'react-router-dom'
+import './Dashboard.css'
 
-import React, { useState, useEffect } from 'react'
-import { getCategoriesApi, getProductsApi,getAuctionsApi} from '../Utilities'
-import Timerview from './Timerview'
+import { useParams } from 'react-router'
 
-import{Link} from 'react-router-dom'
+import {getCustomerByID,getCategoriesApi, getProductsApi,getAuctionsApi,getProductsByCustomerID} from '../Utilities'
+import SidebarDashboard from './SidebarDashboard'
+import Timerview from '../Product/Timerview'
 
-export default function Productlist() {
 
+export default function DashboardProducts() {
+
+    const [user,setUser]=useState([])
+    let {id}=useParams();
     const [categoryList, setCategoryList] = useState(null)
     const [productList, setProductList] = useState(null)
     const [auctionList, setAuctionList] = useState(null)
-    
-
     useEffect(() => {
         takeapi()
-
-
+        
     }, [])
 
     const takeapi = async () => {
+        const dataCus = await getCustomerByID(id)
         const dataCat = await getCategoriesApi()
-        const dataPro = await getProductsApi()
+        const dataPro = await getProductsByCustomerID(id)
         const dataAuc=await getAuctionsApi()
 
-
+        console.log(dataPro);
         setCategoryList(dataCat)
         setProductList(dataPro.reverse())
         setAuctionList(dataAuc)
+        setUser(dataCus)
+
     }
-
-    const dateCompare=(finishdate)=>{
-      const d1=new Date(finishdate)
-      const d2=new Date()
-      if(d1>d2){
-          return (<h4 className="mb-0"><div className="badge badge-success badge-pill badge-news">Active</div></h4>)
-      }
-      return <h4 className="mb-0"><div className="badge badge-secondary badge-pill badge-news h3">Ended</div></h4>
-      console.log(d1,d2);
-     
-
-  }
-
 
     const countsOfBids=(id)=>{
-      if(auctionList){
-        const result = auctionList.filter(auction => auction.productID==id);
-        return result.length
+        if(auctionList){
+          const result = auctionList.filter(auction => auction.productID==id);
+          return result.length
+        }
+        return
       }
-      return
-    }
 
+    const dateCompare=(finishdate)=>{
+        const d1=new Date(finishdate)
+        const d2=new Date()
+        if(d1>d2){
+            return (<h4 className="mb-0"><div className="badge badge-success badge-pill badge-news">Active</div></h4>)
+        }
+        return <h4 className="mb-0"><div className="badge badge-secondary badge-pill badge-news h3">Ended</div></h4>
+        console.log(d1,d2);
+       
+  
+    }
     const getcategoryById=(id)=>{
         let index=categoryList.find(s=>s.categoryID===id)
         return index.title
     }
+
     const ProductListView=()=>{
-        return productList&&productList.map((pro)=>{
+        return( productList&&productList.map((pro)=>{
             return(
                 <section key={pro.productID}>
     
@@ -142,12 +149,43 @@ export default function Productlist() {
     
     </section>
             )
-        })
+        }))
         
     }
+
+    const OrderPage=()=>{
+        return(
+            <div>
+                {
+                    <ProductListView/>
+                }
+            </div>
+        )
+    }
+
+    
+
+    
     return (
-        <div className="container">
-            <ProductListView/>
+        <div>
+            
+            <div className="container">
+            <div className="row flex-nowrap">
+                    <SidebarDashboard idnumber={id}/>
+                <div className="col py-3">
+                    {
+                        OrderPage()
+                    
+                    }
+                    {/* <h3>Left Sidebar with Submenus</h3>
+                    <p className="lead">An example 2-level sidebar with collasible menu items. The menu functions like an "accordion" where only a single menu is be open at a time.</p>
+                    <ul className="list-unstyled">
+                        <li><h5>Responsive</h5> shrinks in width, hides text labels and collapses to icons only on mobile</li>
+                    </ul> */}
+
+                </div>
+            </div>
+        </div>
         </div>
     )
 }

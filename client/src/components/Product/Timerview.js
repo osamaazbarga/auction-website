@@ -4,7 +4,6 @@ export default function Timerview({productInfo}) {
 
     const [isRunningTime, setIsRunningTime] = useState(true);
     let difference = new Date(productInfo.finishdate) - new Date();
-    // let timefinish=getFinishDate(productInfo.finishdate)
     
 
     useEffect(() => {
@@ -16,10 +15,6 @@ export default function Timerview({productInfo}) {
             },1000)
             return (()=>clearInterval(timer))
         }
-            // const timer = setTimeout(() => {
-            //     setTimeLeft(calculateTimeLeft());
-            //   }, 1000);
-              //return () => clearTimeout(timer);
 
     });
     useEffect(() => {
@@ -31,10 +26,7 @@ export default function Timerview({productInfo}) {
             },1000)
             return (()=>clearInterval(timer))
         }
-            // const timer = setTimeout(() => {
-            //     setTimeLeft(calculateTimeLeft());
-            //   }, 1000);
-              //return () => clearTimeout(timer);
+
 
       });
       const calculateTimeLeft = () => {
@@ -74,12 +66,14 @@ export default function Timerview({productInfo}) {
             if(timeLeft['d']<=0&&timeLeft['h']<=0&&timeLeft['m']<=0&&timeLeft['s']<=0 && isRunningTime==true){
 
                 setIsRunningTime(false)
-                // console.log(isRunningTime);
+                
             }
             
+            
         if (!timeLeft[interval]) {
-            return;
+            return(<div></div>)
         }
+        
 
         timerComponents.push(
             <span>
@@ -98,12 +92,12 @@ export default function Timerview({productInfo}) {
 
     return (
         <div>
-            Time left:  <span class="h5 font-weight-bold">
+            Time left:  <span className="h5 font-weight-bold">
             {
                 timerComponents.length ? timerComponents  : <span style={{color:"red"}}>Ended</span>
             }
             </span>
-            <div class="h6">Finish Date: {productInfo.finishdate}</div>
+            <div className="h6">Finish Date: {productInfo.finishdate}</div>
         </div>
     )
 

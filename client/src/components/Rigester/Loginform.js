@@ -58,30 +58,12 @@ import ReloadLogin from '../Reload/ReloadLogin';
             
 
         }
-        // try {
-        //     const req=await Api.post('customers/login',{
-        //         email:String(values.email),
-        //         password:String(values.password)
-        //     })
-        //     if(req.data.error){
-        //         setLoginError(req.data.error)
-        //     }
-        //     else {
-        //         setLoginError("")
-        //         setUser(req.data)
-        //     }
-        // } catch (error) {
-        //     setLoginError(req.data.error)
-        // }
+
         
         
     }
 
-    // const login=()=>{
-    //     if(user!=""){
-    //         setFrom("/")
-    //     }
-    // }
+
 
     return (
         <div className="boxcontainer">
@@ -92,8 +74,6 @@ import ReloadLogin from '../Reload/ReloadLogin';
         onSubmit={async values => {
             loginApi(values)
 
-        //   await new Promise(resolve => setTimeout(resolve, 500));
-        //   alert(JSON.stringify(values, null, 2));
         }}
       >
           <Form>

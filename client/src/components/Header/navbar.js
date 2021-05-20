@@ -29,7 +29,7 @@ const Navbar =()=>{
                             <ul className="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
                             {/* <Link to="/" className="item d-sm-inline h5 mx-1">Hi <strong>{userlogin.user.username}</strong></Link> */}
                                 <li><Link to="/addproduct" className="dropdown-item d-sm-inline mx-1">Add Product</Link></li>
-                                <li><Link to="/dashboard" className="dropdown-item d-sm-inline mx-1">Dashboard</Link></li>
+                                <li><Link to={`/dashboard/${userlogin.user.customerID}`} className="dropdown-item d-sm-inline mx-1">Dashboard</Link></li>
                                 <li><Link to="/" className="dropdown-item d-sm-inline mx-1">Profile</Link></li>
                                 <li>
                                     <hr className="dropdown-divider"/>

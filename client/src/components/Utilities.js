@@ -19,14 +19,40 @@ export async function getProductsApi() {
     return req.data
 }
 
+export async function getProductsByCustomerID(id) {
+    const req=await Api.get(`api/products/productsbycustomerid/${id}`)
+    console.log(req);
+    return req.data
+}
+
 export async function getAuctionsApi() {
     const req=await Api.get('api/auctions')
-    console.log(req);
+
+    return req.data
+}
+
+export async function getCustomerApi() {
+    const req=await Api.get('api/customers')
+
+    return req.data
+}
+
+export async function getCustomerByID(id) {
+    const req=await Api.get(`api/customers/${id}`)
+    return req.data
+}
+
+
+
+export async function getAuctionsByIDProduct(id) {
+    const req=await Api.get(`api/auctions/byproduct/${id}`)
+
     return req.data
 }
 
 export async function getCategoryByIDApi(id) {
     const req=await Api.get(`api/categories/${id}`)
+    console.log(req);
     return req.data
 
 }
@@ -41,7 +67,6 @@ export async function countsOfBids(id) {
     const req=await Api.get(`api/auctions/byproduct/${id}`)
     console.log(req);
     return req.data
-
 }
 
 

@@ -47,8 +47,6 @@ export default function Signupform(props) {
                 signupApi(values)
             }
 
-        //   await new Promise(resolve => setTimeout(resolve, 500));
-        //   alert(JSON.stringify(values, null, 2));
         }}
       >
           <Form>

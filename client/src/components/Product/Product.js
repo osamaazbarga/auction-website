@@ -1,9 +1,10 @@
 import './Product.css'
 import './Productresponsive.css'
 import { useParams } from 'react-router'
-import React, {useRef, useState,useEffect ,StrictMode} from 'react'
+import React, {useState,useEffect} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { changeStatusProduct} from '../Utilities'
+
+import { changeStatusProduct,getAuctionsByIDProduct,getCustomerApi} from '../Utilities'
 
 
 
@@ -14,17 +15,19 @@ export default function Product() {
     const [productInfo,setProductInfo]=useState([])
     const [productAuctions,setProductAuctions]=useState([])
     const [productImages,setProductImages]=useState([])
-    const [auctionError,setaAuctionError]=useState("")
+
     const [priceAuction,setPriceAuction]=useState(null)
     const [sellerInfo,setSellerInfo]=useState([])
+    const [allCustomers,setAllCustomers]=useState([])
 
 
-
-    // const [timeLeft, setTimeLeft] = useState();
     const [isRunningTime, setIsRunningTime] = useState(true);
     let difference = new Date(productInfo.finishdate) - new Date();
-    // W
 
+    const takeapi = async () => {
+        const dataCus = await getCustomerApi()
+        setAllCustomers(dataCus)
+    }
     
     const getProductByID=async()=>{
         const req=await Api.get(`api/products/${id}`)
@@ -33,63 +36,52 @@ export default function Product() {
         setProductImages(req.data.meta_data[0])
         const seller=await getCustomerByID(req.data.customerID)
         setSellerInfo(seller)
-        console.log(await sellerInfo);
-        //console.log("data:"+productInfo.meta_data[0].contentType+";base64 "+productInfo.meta_data[0].ImageBase64);
+
         
     }
-    const getAuctionPayments=async()=>{
-        const req=await Api.get(`api/auctions/byproduct/${id}`)
-        console.log(req.data);
-        if(req.data.nodata){
-            setaAuctionError(req.data.nodata)
-        }
-        else{
-            setaAuctionError("")
-            setProductAuctions(req.data)
-        }
-        setProductAuctions(req.data)
-        // setProductImages(req.data.meta_data[0])
-        //console.log("data:"+productInfo.meta_data[0].contentType+";base64 "+productInfo.meta_data[0].ImageBase64);
+    const getAuctionPayments=async(id)=>{
+        const dataAuc=await getAuctionsByIDProduct(id)
+        console.log(dataAuc);
+        setProductAuctions(dataAuc)
+       
         
     }
     const getCustomerByID=async(customerIDnum)=>{
         const req=await Api.get(`api/customers/${customerIDnum}`)
-        console.log(req.data);
         return req.data
-        // setProductInfo(req.data)
-        
-        //console.log("data:"+productInfo.meta_data[0].contentType+";base64 "+productInfo.meta_data[0].ImageBase64);
         
     }
+    const getUsernameByID=(id)=>{
+        console.log(allCustomers);
+        let user=null
+        while(user==null){
+            user=allCustomers.find(s=>s.customerID===id)
+        }
+        user=allCustomers.find(s=>s.customerID===id)
+        console.log(user);
+        return user.username
+    }
     useEffect(() => {
-        console.log(id);
         console.log(user);
         getProductByID()
-        getAuctionPayments()
+        takeapi()
+        getAuctionPayments(id)
+
         
     }, [])
     useEffect(() => {
-        console.log(isRunningTime);
         if(difference>0){
             const timer=setInterval(()=>{
-                console.log(isRunningTime);
                 setTimeLeft(calculateTimeLeft());
             },1000)
             return (()=>clearInterval(timer))
         }
-            // const timer = setTimeout(() => {
-            //     setTimeLeft(calculateTimeLeft());
-            //   }, 1000);
-              //return () => clearTimeout(timer);
 
       });
       const calculateTimeLeft = () => {
         let year = new Date().getFullYear();
-        console.log(productInfo.finishdate);
-        
-        // let difference = new Date(productInfo.finishdate) - new Date();
 
-        console.log(difference);
+
         let timeLeft = {};
         if (difference > 0) {
             timeLeft = {
@@ -102,10 +94,7 @@ export default function Product() {
         if(timeLeft == null){
             setIsRunningTime(false)
 
-            console.log("here");
         }
-        // else setIsRunningTime(false)
-        console.log(timeLeft);
         return timeLeft;
     }
     const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
@@ -115,16 +104,13 @@ export default function Product() {
       const timerComponents = [];
 
         Object.keys(timeLeft).forEach((interval) => {
-            // console.log(timeLeft['d']);
             if(timeLeft['d']<=0&&timeLeft['h']<=0&&timeLeft['m']<=0&&timeLeft['s']<=0 && isRunningTime==true){
                 changeStatusProduct(productInfo.productID)
                 setIsRunningTime(false)
-                
-                console.log(isRunningTime);
             }
             
         if (!timeLeft[interval]) {
-            return;
+            return <div key={timeLeft}></div>;
         }
 
         timerComponents.push(
@@ -134,23 +120,15 @@ export default function Product() {
         );
         });
 
-    // const renderAuctionsPayments=()=>{
-    //     return productAuctions.map((act)=>{
-    //         console.log(act);
-    //     })
-    // }
     const updatePriceAuctions=async(productIDnum,amount)=>{
         const req=await Api.post(`api/products/updatepriceauctions/${productIDnum}`,{
             priceAuction:Number(amount)
         })
         await getProductByID()
-        console.log(req);
-
     }
 
     const handlePayment=async()=>{
         if(user){
-            console.log(user.user);
             const req=await Api.post(`api/auctions`,{
                 productID:Number(productInfo.productID),
                 customerID:Number(user.user.customerID),
@@ -164,7 +142,6 @@ export default function Product() {
             else{
                 updatePriceAuctions(productInfo.productID,priceAuction)
             }
-            // console.log(priceAuction);
 
         }
         else{
@@ -172,33 +149,21 @@ export default function Product() {
         }
     }
         
-
-    
-    // const timerunning=()=>{
-    //     if(timerComponents.length){
-    //         return timerComponents
-    //     }
-        
-    //         setIsDisable(true)
-    //     return <span>Finish Time's up!</span>
-        
-    //     // timerComponents.length ? timerComponents  : <span>Time's up!</span>
-    // }
     return (
         <div>
-            <section class="section-content padding-y bg">
-        <div class="container">
+            <section className="section-content padding-y bg">
+        <div className="container">
     
-        <article class="card">
-            <div class="card-body">
-                    <div class="row">
-                        <aside class="col-md-6">
-                                <article class="gallery-wrap">
-                                    <div class="card img-big-wrap">
+        <article className="card">
+            <div className="card-body">
+                    <div className="row">
+                        <aside className="col-md-6">
+                                <article className="gallery-wrap">
+                                    <div className="card img-big-wrap">
                                         <a href="#"> <img src={`data:${productImages.contentType};base64, ${productImages.ImageBase64}`} /></a>
                                         {/* {"data:"+productInfo.meta_data[0].contentType+";base64,"+productInfo.meta_data[0].ImageBase64} */}
                                     </div> 
-                                    <div class="thumbs-wrap">
+                                    <div className="thumbs-wrap">
                                         {
                                             // console.log(productInfo.meta_data)
                                            
@@ -206,7 +171,7 @@ export default function Product() {
                                                 // console.log(imageP.ImageBase64);
                                                 // if(index>0){
                                                     
-                                                    return<a href="#" class="item-thumb"> <img src={`data:${imageP.contentType};base64, ${imageP.ImageBase64}`} /></a>
+                                                    return<a href="#" className="item-thumb"> <img src={`data:${imageP.contentType};base64, ${imageP.ImageBase64}`} /></a>
                                                 // }
                                                 
                                             })
@@ -214,97 +179,78 @@ export default function Product() {
                                     </div>
                                 </article>
                         </aside>
-                        <main class="col-md-6">
+                        <main className="col-md-6">
                             <article>
-                                <a href="#" class="text-primary btn-link">{sellerInfo.username}</a>
-                                <h3 class="title">{productInfo.title}</h3>
+                                <a href="#" className="text-primary btn-link">{sellerInfo.username}</a>
+                                <h3 className="title">{productInfo.title}</h3>
                                 <div>
-                                    <ul class="rating-stars">
-                                        <li  class="stars-active"> 
-                                            <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
-                                            <i class="fa fa-star"></i>  
+                                    <ul className="rating-stars">
+                                        <li  className="stars-active"> 
+                                            <i className="fa fa-star"></i> <i className="fa fa-star"></i> 
+                                            <i className="fa fa-star"></i>  
                                             
                                         </li>
                                         <li>
-                                            <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
-                                            <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
-                                            <i class="fa fa-star"></i> 
+                                            <i className="fa fa-star"></i> <i className="fa fa-star"></i> 
+                                            <i className="fa fa-star"></i> <i className="fa fa-star"></i> 
+                                            <i className="fa fa-star"></i> 
                                         </li>
                                     </ul>
-                                    <span class="label-rating mr-3 text-muted">7/10</span>
-                                    <a href="#" class="btn-link  mr-3 text-muted"> <i class="fa fa-heart"></i> Save for later </a>
-                                    <a href="#" class="btn-link text-muted"> <i class="fa fa-book-open"></i> Compare </a>
+                                    <span className="label-rating mr-3 text-muted">7/10</span>
+                                    <a href="#" className="btn-link  mr-3 text-muted"> <i className="fa fa-heart"></i> Save for later </a>
+                                    <a href="#" className="btn-link text-muted"> <i className="fa fa-book-open"></i> Compare </a>
                                 </div> 
         
                                 <hr />
-                                <div class="mb-3">
-                                <div class="h6">Condition: </div>
-                                <div class="h6">Time left:  <span class="h5 font-weight-bold">{
+                                <div className="mb-3">
+                                <div className="h6">Condition:{productInfo.condition} </div>
+                                <div className="h6">Time left:  <span className="h5 font-weight-bold">{
                                             // timerunning()
-                                            timerComponents.length ? timerComponents  : <span>Time's up!</span>
+                                            timerComponents.length ? timerComponents  : <span style={{color:"red"}}>Ended</span>
                                     }
                                     </span>
                                     
                                 </div >
-                                <div class="h6">Finish Date: {productInfo.finishdate}</div>
+                                <div className="h6">Finish Date: {productInfo.finishdate}</div>
                                 </div>
-                                <div class="mb-3">
+                                <div className="mb-3">
                                     <h6>Short description</h6>
-                                    <ul class="list-dots mb-0">
-                                        <li>Made in Russia</li>
-                                        <li>Wolf leather </li>
-                                        <li>Rubber material bottom</li>
+                                    <ul className="list-dots mb-0">
+                                        <li>Ship From : <strong>{productInfo.country}</strong></li>
+                                        <li>Shipping Price : <strong>{productInfo.shippingprice}</strong> </li>
+                                        <li>Shipping With : <strong>{productInfo.shippingwith}</strong></li>
                                         <li>Dark blue color</li>
                                     </ul>
                                 </div>
                                 
-                                <div class="form-group">
-                                    <label class="text-muted">Available sizes</label>
+                                <div className="form-group">
+                                    <label className="text-muted">Available sizes</label>
                                     <div>
-                                    {/* {
-                                            timerComponents.length ? timerComponents : <span>Time's up!</span>
-                                    } */}
-                                        {/* <label class="js-check btn btn-check active mr-1">
-                                            <input type="radio" name="option_size" value="option1" checked="" />
-                                            <span>Small</span>
-                                        </label>
-                                        <label class="js-check btn btn-check mr-1">
-                                            <input type="radio" name="option_size" value="option1" />
-                                            <span>Medium</span>
-                                        </label>
-                                        <label class="js-check btn btn-check mr-1">
-                                            <input type="radio" name="option_size" value="option1" />
-                                            <span>Large</span>
-                                        </label>
-                                        <label class="js-check btn btn-check disabled">
-                                            <input type="radio" name="option_size" disabled="" value="option1" />
-                                            <span>Babies</span>
-                                        </label>   */}
                                     </div>            
                                 </div>
 
-                                <div class="mb-3">
-                                    <var class="h5">Starting bid:</var> <var class="price h4">${productInfo.price}</var> <br />
-                                    {/* <span class="monthly">$32.00 / monthly <a href="#" class="btn-link">installment </a></span> */}
+                                <div className="mb-3">
+                                    <var className="h5">Starting bid:</var> <var className="price h4">${productInfo.price}</var><span> + ${productInfo.shippingprice} Shipping</span>  <br />
+                                    {/* <span className="monthly">$32.00 / monthly <a href="#" className="btn-link">installment </a></span> */}
                                 </div> 
 
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">$</span>
+                                <div className="input-group mb-3">
+                                    <div className="input-group-prepend">
+                                        <span className="input-group-text">$</span>
                                     </div>
-                                    <input type="text" onChange={event => setPriceAuction(event.target.value)} class="form-control" aria-label="Amount (to the nearest dollar)"/>
-                                    {/* <div class="input-group-append">
-                                        <span class="input-group-text">.00</span>
+                                    <input type="text" onChange={event => setPriceAuction(event.target.value)} className="form-control" aria-label="Amount (to the nearest dollar)"/>
+                                    {/* <div className="input-group-append">
+                                        <span className="input-group-text">.00</span>
                                     </div> */}
                                     {
-                                        difference>=0?<button onClick={handlePayment} class="btn btn-primary mr-1">Place Bid</button>:<button disabled class="btn btn-primary mr-1">Place Bid</button>
+                                        difference>=0?<button onClick={handlePayment} className="btn btn-primary mr-1">Place Bid</button>:<button disabled className="btn btn-primary mr-1">Place Bid</button>
                                     }
-                                    {/* <button class="btn btn-primary mr-1">Place Bid</button> */}
-                                    <a href="#" class="btn btn-light">Add to card</a>
+                                    {/* <button className="btn btn-primary mr-1">Place Bid</button> */}
+                                    <a href="#" className="btn btn-light">Add to card</a>
                                     </div> 
-                                <div class="mb-3">
-                                <var class="h5">Price:</var><var class="price h4">${productInfo.priceAuction}</var> <br />
-                                    {/* <span class="monthly">$32.00 / monthly <a href="#" class="btn-link">installment </a></span> */}
+                                <div className="mb-3">
+                                <var className="h5">Price:</var><var className="price h4">${productInfo.priceAuction}</var> <span> + ${productInfo.shippingprice} Shipping</span> <br />
+                                    {/* <span className="monthly">$32.00 / monthly <a href="#" className="btn-link">installment </a></span> */}
                                 </div> 
         
                                 
@@ -315,52 +261,77 @@ export default function Product() {
             </div> 
         </article>
 
-        <article class="card mt-5">
-            <div class="card-body justify-center">
-                {/* <div class="row">
-                </div>  */}
-                {/* {
-                    auctionError?auctionError:renderAuctionsPayments()
-                } */}
-                {/* <hr /> */}
+        <article className="card mt-5">
+            <div className="card-body justify-center">
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    {
+                        productInfo.discription
+                    }
+                </p>
+            </div> 
+        </article>
+
+        <article className="card mt-5">
+            <div className="card-body justify-center">
+                <p>
+                    {
+                        productAuctions&&productAuctions.map((auc)=>{
+                            const username=getUsernameByID(Number(auc.customerID))
+                            return(<div className="d-flex justify-content-between">
+
+                                    <div>
+                                        {
+                                            username
+                                        }
+                                    </div>
+                                    <div>
+                                        {
+                                            auc.paymentamount
+                                        } $
+                                    </div>
+                                    <div>
+                                        {
+                                            auc.createdAt
+
+                                        }
+                                    </div>
+                                        
+
+
+                            </div>)
+                        })
+                    }
                 </p>
             </div> 
         </article>
 
 
 
-        <article class="card mt-5">
-            <div class="card-body">
-                <div class="row">
-                    <aside class="col-md-6">
+        <article className="card mt-5">
+            <div className="card-body">
+                <div className="row">
+                    <aside className="col-md-6">
                         <h5>Parameters</h5>
-                        <dl class="row">
-                              <dt class="col-sm-3">Display</dt>
-                              <dd class="col-sm-9">13.3-inch LED-backlit display with IPS</dd>
+                        <dl className="row">
+                              <dt className="col-sm-3">Display</dt>
+                              <dd className="col-sm-9">13.3-inch LED-backlit display with IPS</dd>
         
-                              <dt class="col-sm-3">Processor</dt>
-                              <dd class="col-sm-9">2.3GHz dual-core Intel Core i5</dd>
+                              <dt className="col-sm-3">Processor</dt>
+                              <dd className="col-sm-9">2.3GHz dual-core Intel Core i5</dd>
         
-                              <dt class="col-sm-3">Camera</dt>
-                              <dd class="col-sm-9">720p FaceTime HD camera</dd>
+                              <dt className="col-sm-3">Camera</dt>
+                              <dd className="col-sm-9">720p FaceTime HD camera</dd>
         
-                              <dt class="col-sm-3">Memory</dt>
-                              <dd class="col-sm-9">8 GB RAM or 16 GB RAM</dd>
+                              <dt className="col-sm-3">Memory</dt>
+                              <dd className="col-sm-9">8 GB RAM or 16 GB RAM</dd>
                               
-                              <dt class="col-sm-3">Graphics</dt>
-                              <dd class="col-sm-9">Intel Iris Plus Graphics 640</dd>
+                              <dt className="col-sm-3">Graphics</dt>
+                              <dd className="col-sm-9">Intel Iris Plus Graphics 640</dd>
                         </dl>
                     </aside>
-                    <aside class="col-md-6">
+                    <aside className="col-md-6">
                         <h5>Features</h5>
-                        <ul class="list-check">
+                        <ul className="list-check">
                             <li>Best performance of battery</li>
                             <li>5 years warranty for this product</li>
                             <li>Amazing features and high quality</li>

@@ -9,7 +9,7 @@ export const users = async dispatch => {
     //         payload: res.data
     // })) 
     console.log("from user");
-    console.log(Api.get('/customers')
+    console.log(Api.get('api/customers')
         .then(res => dispatch({
             type: 'FETCH_USERS',
             payload: res.data

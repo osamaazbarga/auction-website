@@ -79,9 +79,9 @@ const Home = () => {
         const d1=new Date(finishdate)
         const d2=new Date()
         if(d1>d2){
-            return <div className="badge badge-secondary badge-pill badge-news">Ended</div>
+            return (<div className="badge badge-success badge-pill badge-news">Active</div>)
         }
-        return (<div className="badge badge-success badge-pill badge-news">Active</div>)
+        return <div className="badge badge-secondary badge-pill badge-news">Ended</div>
         console.log(d1,d2);
 
     }
@@ -188,7 +188,7 @@ const Home = () => {
                                     productList && productList.map((pro,index)=>{
                                         if(index<14){
                                             return(
-                                                <div className="form-group">
+                                                <div key={pro.productID} className="form-group">
                                             <div className="view zoom overlay z-depth-2 rounded">
                                                 {/* <img class="img-fluid w-100"
                                                 src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12a.jpg" alt="Sample"/> */}
@@ -209,7 +209,7 @@ const Home = () => {
 
                                                 <div className="text-center pt-4">
 
-                                            <h5>{pro.title}</h5>
+                                            <h5>{pro.title.substring(0, 20)+"..."}</h5>
                                             <h6 className="mb-3">{pro.priceAuction} $</h6>
                                             <h6 className="mb-3">
                                                 {/* {new Date(pro.finishdate)<new Date.now()?<div>active</div>:<div>not</div>} */}

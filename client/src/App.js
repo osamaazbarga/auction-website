@@ -16,6 +16,7 @@ import Dashboard from './components/Dashboard/Dashboard';
 import Productlist from './components/Product/Productlist';
 import Reload from './components/Reload/Reload';
 import ReloadLogin from './components/Reload/ReloadLogin';
+import DashboardOrder from './components/Dashboard/DashboardOrder';
 ;
 
 // import {Provider} from 'react-redux'
@@ -60,7 +61,12 @@ function App() {
                 <Route path="/product/:id" component={Product}/>
                 <Route path="/addproduct" component={Addproduct}/>
                 {/* <Route path="/addproduct" component={Addproduct}/> */}
-                <Route path="/dashboard" component={Dashboard}/>
+                <Route path="/dashboard/:id" exact component={Dashboard}/>
+                <Route path="/dashboard/order/:id" component={DashboardOrder}/>
+                <Route path="/dashboard/product/:id" component={DashboardOrder}/>
+
+
+
                 <Route path="/reloadlogin" component={ReloadLogin}/>
                 <Route path="/reload" component={Reload}/>
 

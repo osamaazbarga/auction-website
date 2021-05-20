@@ -15,7 +15,7 @@ const initialState = {
 
 
 const usersReducer=async ()=>{
-    const req=await Api.get('/customers');
+    const req=await Api.get('api/customers');
     // console.log(req.data);
 
     // console.log(Api.get('/customers')
