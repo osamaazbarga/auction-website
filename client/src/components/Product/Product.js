@@ -55,11 +55,11 @@ export default function Product() {
         console.log(allCustomers);
         let user=null
         while(user==null){
-            user=allCustomers.find(s=>s.customerID===id)
+            user=allCustomers.filter(s=>s.customerID===id)
         }
-        user=allCustomers.find(s=>s.customerID===id)
+        user=allCustomers.filter((s)=>s.customerID===id)
         console.log(user);
-        return user.username
+        return user
     }
     useEffect(() => {
         console.log(user);
@@ -110,7 +110,7 @@ export default function Product() {
             }
             
         if (!timeLeft[interval]) {
-            return <div key={timeLeft}></div>;
+            return <div></div>;
         }
 
         timerComponents.push(
@@ -279,9 +279,9 @@ export default function Product() {
                             const username=getUsernameByID(Number(auc.customerID))
                             return(<div className="d-flex justify-content-between">
 
-                                    <div>
+                                    {/* <div>
                                         {
-                                            username
+                                            username[0].username
                                         }
                                     </div>
                                     <div>
@@ -294,7 +294,7 @@ export default function Product() {
                                             auc.createdAt
 
                                         }
-                                    </div>
+                                    </div> */}
                                         
 
 

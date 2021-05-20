@@ -46,11 +46,12 @@ router.get('/bycustomer/:id',(req, res) => {
 router.post('/',(req, res) => {
     console.log(req.body);
     const auction=req.body;
+
     auctionSchema.findOne({}, {}, { sort: { _id : -1 } }, function(err, post) {
-        console.log(auction);
+        console.log("a"+auction);
         console.log(post);
         if(post){
-            if(post.paymentamount>=auction.paymentamount){
+            if(post.paymentamount>=auction.priceAuction){
                 console.log("from if");
                 return res.send({error:"the amount is less than the minimum"})
             }
