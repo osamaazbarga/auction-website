@@ -279,7 +279,7 @@ export default function Product() {
                             const username=getUsernameByID(Number(auc.customerID))
                             return(<div className="d-flex justify-content-between">
 
-                                    {/* <div>
+                                    <div>
                                         {
                                             username[0].username
                                         }
@@ -294,7 +294,7 @@ export default function Product() {
                                             auc.createdAt
 
                                         }
-                                    </div> */}
+                                    </div>
                                         
 
 
