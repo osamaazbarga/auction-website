@@ -43,7 +43,7 @@ const Navbar =()=>{
     return (
         <nav className="navbaritem">
             
-            <Link to="/" className="item"><h1 className="navbar-logo">Action<i className="fab fa-react"></i></h1></Link>
+            <Link to="/" className="item"><h1 className="navbar-logo">Auction Daily<i className="fab fa-react"></i></h1></Link>
             <div className="menu-icon" onClick={handleClick}>
                 <i className={clicked?'fas fa-times':'fas fa-bars'}></i>
                 
