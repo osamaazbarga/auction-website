@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 // import './App.css';
 import { Route } from 'react-router';
 
@@ -17,7 +17,10 @@ import Productlist from './components/Product/Productlist';
 import Reload from './components/Reload/Reload';
 import ReloadLogin from './components/Reload/ReloadLogin';
 import DashboardOrder from './components/Dashboard/DashboardOrder';
-;
+
+// import {useDispatch} from 'react-redux'
+
+// import {getPosts} from './actions/post'
 
 // import {Provider} from 'react-redux'
 // import {createStore} from 'redux'
@@ -47,7 +50,11 @@ import DashboardOrder from './components/Dashboard/DashboardOrder';
 
 
 function App() {
+  // const dispatch = useDispatch()
 
+  // useEffect(() => {
+  //   dispatch(getPosts())
+  // }, [dispatch])
   return (
 
     <div>

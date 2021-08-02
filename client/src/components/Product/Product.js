@@ -55,11 +55,11 @@ export default function Product() {
         console.log(allCustomers);
         let user=null
         while(user==null){
-            user=allCustomers.filter(s=>s.customerID===id)
+            user=allCustomers&&allCustomers.filter(s=>s.customerID===id)
         }
-        user=allCustomers.filter((s)=>s.customerID===id)
-        console.log(user);
-        return user
+        user=allCustomers&&allCustomers.filter((s)=>s.customerID===id)
+        console.log("user",user[0]);
+        return user[0]
     }
     useEffect(() => {
         console.log(user);
@@ -274,14 +274,15 @@ export default function Product() {
         <article className="card mt-5">
             <div className="card-body justify-center">
                 <p>
-                    {
-                        productAuctions&&productAuctions.map((auc)=>{
+                    {allCustomers!=null?
+                        allCustomers&&productAuctions&&productAuctions.map((auc)=>{
                             const username=getUsernameByID(Number(auc.customerID))
-                            return(<div className="d-flex justify-content-between">
+                            console.log("username",allCustomers);
+                            return(username&&<div className="d-flex justify-content-between">
 
                                     <div>
                                         {
-                                            username[0].username
+                                           username&&username.username
                                         }
                                     </div>
                                     <div>
@@ -300,7 +301,7 @@ export default function Product() {
 
                             </div>)
                         })
-                    }
+                    :<div>loading</div>}
                 </p>
             </div> 
         </article>

@@ -522,7 +522,7 @@ export default function Addproduct() {
 
             </form>
             {/* <button className="submitbutton" type="submit">Signup</button> */}
-            <button className="submitbutton" type="submit"><Link to={`/product/${productInfo.productID}`}>Signup</Link></button>
+            <button className="submitbutton" type="submit"> <Link to={`/product/${productInfo.productID}`}>Add Product</Link></button>
             {/* <a className="mutedlink" href="#">Already have an account? <a className="boldlink" href="#" onClick={switchToSignin}>Signin</a></a>
               <div className="mutedlink" style={{color:"red"}} href="#">{signupError}</div> */}
           </Form>
