@@ -1,3 +1,5 @@
+
+const dotenv=require("dotenv")
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser')
@@ -7,11 +9,14 @@ const cusomersRoute = require('./server/routes/customer.routes')
 const categoriesRoute = require('./server/routes/category.routes')
 const productsRoute = require('./server/routes/product.routes')
 const auctionsRoute = require('./server/routes/auction.routes')
+// const connectDB=require('./server/config/db')
+// connectDB()
+
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
-const port = 8000;
-
+const port = 5000;
+dotenv.config({path:'./.env'})
 app.use(cors());
 app.get('/api/getUser', (req,res)=>{
     const user = 'Evgeni';
@@ -38,6 +43,6 @@ if (process.env.NODE_ENV === 'production') {
       res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
     });
   }
-app.listen(process.env.PORT || port , () =>{
+app.listen(process.env.PORT , () =>{
     console.log(`Server started on port ${port}`)
 });
